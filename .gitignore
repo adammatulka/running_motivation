@@ -1,3 +1,6 @@
-node_modules
-dist
-.cache
+# Modules
+node_modules/
+
+# Built garabage
+dist/
+.cache/
