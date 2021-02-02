@@ -1,70 +1,74 @@
-import React, {useRef, useState} from 'react';
-//import moment from 'moment';   
+import React, {useRef, useState} from 'react';   
+import dayjs from 'dayjs';
 
 export const Main = () => {
 
-    const [pace, setPace] = useState();
-    const [isRunning, setIsRunning] = useState(false);
-    const [isPaused, setIsPaused] = useState(false);
-    const [runtime, setRuntime] = useState(3555);
-    const countRef = useRef(null) 
-     
-    const handleStart = (e) => {
-        e.preventDefault(); 
-        setIsRunning(true)
-        setIsPaused(false)
-        countRef.current = setInterval(() => {
-            setRuntime((runtime) => runtime + 1)
-        }, 1000)
-    }    
+    var isRunning;
 
-    const handleStop = (e) => {
-        e.preventDefault(); 
-        clearInterval(countRef.current)
-        setIsPaused(true)
-    }
- /*   const handleStart = (e) =>{
-        e.preventDefault(); 
-        setRuntime(moment().format("h:mm:ss:SS"));
-        setInterval(function(){ setRuntime(moment().format("h:mm:ss:SS")); },100);
+    const [pace, setPace] = useState(0);
+    const [runtime, setRuntime] = useState(''); 
+
+    const [changebtn, setChangebtn] = useState('Start');
+
+    const bminus = document.getElementById('bminus');
+    const bplus = document.getElementById('bplus');
+    const paceinput = document.getElementById('paceinput');
+
+    const handleStart = (e) =>{ 
+        e.preventDefault();
+
+        isRunning = setInterval(function(){ setRuntime(dayjs().startOf('day').format('[Time:] HH:mm:ss')); },100);
+
+        bminus.disabled = true;
+        bplus.disabled = true;
+        paceinput.disabled = true;
     }    
 
     const handleStop = (e) =>{
         e.preventDefault(); 
-        setRuntime();
+
+        clearInterval(isRunning);
+        setRuntime('')
+
+        bminus.disabled = false;
+        bplus.disabled = false;
+        paceinput.disabled = false;
     }
-*/
-    const formatTime = () => {
-    const getSeconds = `0${(timer % 60)}`.slice(-2)
-    const minutes = `${Math.floor(timer / 60)}`
-    const getMinutes = `0${minutes % 60}`.slice(-2)
-    const getHours = `0${Math.floor(timer / 420)}`.slice(-2)
-
-    return `${getHours} : ${getMinutes} : ${getSeconds}`
-  }
-
 
     const handleAdd = () =>  {
+        setPace(pace + 1)
 
     }
 
     const handleSub = () =>  {
+        setPace(pace - 1)
         
     }
 
     return(
         <div>
-            <button onClick={handleSub}>-</button>
+            <div id="pacestats">
+            <button id="bminus" onClick={handleSub}>-</button>
                 <label>
-                    <input type="text" value={ pace } onChange={(e) => setPace(e.target.value)} />
+                    <input type="text" value={ pace } id="paceinput" onChange={(e) => setPace(e.target.value)} />
                 </label>
-            <button onClick={handleAdd}>+</button>
+            <button id="bplus" onClick={handleAdd}>+</button>
+            </div>
 
-            <button onClick={handleStart}>Start</button>
-            <button onClick={handleStop}>Stop</button>
-            <p>
-                <strong>{runtime}</strong>
-            </p>
+            <div id="runstats">
+                <button id="bstarstop" onClick={handleStart}>{ changebtn }</button>
+                <button onClick={handleStop}>Stop</button>
+                    <p>
+                        <strong>{ runtime }</strong>
+                    </p>
+            </div>
+
+            <div id="stathistory">
+                <ul>
+
+                </ul>
+            </div>
+
         </div>
     )
 }
