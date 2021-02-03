@@ -1,10 +1,9 @@
-import React, {useRef, useState} from 'react';   
+import React, { useRef, useState } from 'react';   
 import dayjs from 'dayjs';
 
+var isRunning;
+
 export const Main = () => {
-
-    var isRunning;
-
     const [pace, setPace] = useState(0);
     const [runtime, setRuntime] = useState(''); 
 
@@ -17,7 +16,19 @@ export const Main = () => {
     const handleStart = (e) =>{ 
         e.preventDefault();
 
-        isRunning = setInterval(function(){ setRuntime(dayjs().startOf('day').format('[Time:] HH:mm:ss')); },100);
+        console.log('start')
+
+        const startDate = new Date();
+        setInterval(function(){
+            const now = new Date();
+            const runtime = now - startDate;
+            
+            const runtimeFormatted = dayjs().startOf('day').add(runtime, 'milliseconds').format('[Time:] HH:mm:ss')
+            console.log('runtime', runtime)
+            console.log('runtimeFormatted', runtimeFormatted)
+
+            // setRuntime(runtimeFormatted);
+        }, 100);
 
         bminus.disabled = true;
         bplus.disabled = true;
