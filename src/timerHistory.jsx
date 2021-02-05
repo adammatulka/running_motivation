@@ -1,9 +1,7 @@
 import React, { useRef, useState } from 'react';   
 import dayjs from 'dayjs';
 
-var isRunning;
-
-export const Main = () => {
+export const History = () => {
     const [pace, setPace] = useState(0);
     const [runtime, setRuntime] = useState(''); 
 
@@ -58,21 +56,6 @@ export const Main = () => {
 
     return(
         <div>
-            <div id="pacestats">
-            <button id="bminus" onClick={handleSub}>-</button>
-                <label>
-                    <input type="text" value={ pace } id="paceinput" onChange={(e) => setPace(e.target.value)} />
-                </label>
-            <button id="bplus" onClick={handleAdd}>+</button>
-            </div>
-
-            <div id="runstats">
-                <button id="bstarstop" onClick={handleStart}>{ changebtn }</button>
-                <button onClick={handleStop}>Stop</button>
-                    <p>
-                        <strong>{ runtime }</strong>
-                    </p>
-            </div>
 
             <div id="stathistory">
                 <ul>

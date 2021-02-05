@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Main } from './dayjs.class'
+import { Timer } from './timer'
+import { History } from './timerHistory';
 
 ReactDOM.render(<div>
-    <Main />
+    <Timer />
+    <History />
 </div>,document.getElementById('root'));

@@ -2,15 +2,18 @@ import React, { useRef, useState } from 'react';
 import dayjs from 'dayjs';
 
 
-export const Main = () => {
+export const Timer = () => {
     const [pace, setPace] = useState(0);
     const [runtime, setRuntime] = useState('');
     const [runStart, setRunStart] = useState();
     const [running, setRunning] = useState(false);
     
+    const [stats, setStats] = useState('')
+
     const [changebtn, setChangebtn] = useState('Start');
 
     const runningInterval = useRef();
+    
     const handleStart = (e) =>{ 
         e.preventDefault();
 
@@ -36,6 +39,11 @@ export const Main = () => {
 
         const now = new Date();
         localStorage.setItem('lastRun', now - runStart);
+        const listLastRun = localStorage.getItem('lastRun');
+        console.log(dayjs().startOf('day').add(listLastRun, 'milliseconds').format('[Time:] HH:mm:ss'));
+
+        const statsFormatted = dayjs().startOf('day').add(listLastRun, 'milliseconds').format('[Time:] HH:mm:ss')
+        setStats(statsFormatted);
     }
 
     const handleAdd = () =>  {
@@ -49,16 +57,16 @@ export const Main = () => {
     return(
         <div>
             <div id="pacestats">
-            <button disabled={running} onClick={handleSub}>-</button>
+            <button disabled={ running } onClick={handleSub}>-</button>
                 <label>
-                    <input type="text" value={ pace } disabled={running} onChange={(e) => setPace(e.target.value)} />
+                    <input type="text" value={ pace } disabled={ running } onChange={(e) => setPace(e.target.value)} />
                 </label>
-            <button id="bplus" onClick={handleAdd}>+</button>
+            <button disabled={ running } onClick={handleAdd}>+</button>
             </div>
 
             <div id="runstats">
-                <button disabled={running} onClick={handleStart}>{ changebtn }</button>
-                <button disabled={!running} onClick={handleStop}>Stop</button>
+                <button disabled={ running } onClick={handleStart}>{ changebtn }</button>
+                <button disabled={ !running } onClick={handleStop}>Stop</button>
                     <p>
                         <strong>{ runtime }</strong>
                     </p>
@@ -66,7 +74,9 @@ export const Main = () => {
 
             <div id="stathistory">
                 <ul>
-
+                    <p>
+                        { stats }
+                    </p>
                 </ul>
             </div>
 
