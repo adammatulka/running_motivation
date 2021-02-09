@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 
 
 export const Timer = () => {
-    const [pace, setPace] = useState(0);
+    const [pace, setPace] = useState(dayjs().startOf('day').valueOf());
     const [runtime, setRuntime] = useState('');
     const [runStart, setRunStart] = useState();
     const [running, setRunning] = useState(false);
@@ -22,8 +22,7 @@ export const Timer = () => {
         runningInterval.current = setInterval(function(){
             const now = new Date();
             const runtime = now - startDate;
-            
-            const runtimeFormatted = dayjs().startOf('day').add(runtime, 'milliseconds').format('[Time:] HH:mm:ss')
+            const runtimeFormatted = dayjs().startOf('day').add(runtime, 'milliseconds').format('[Time:] HH:mm:ss');
             setRuntime(runtimeFormatted);
         }, 100);
 
@@ -45,13 +44,20 @@ export const Timer = () => {
         const statsFormatted = dayjs().startOf('day').add(listLastRun, 'milliseconds').format('[Time:] HH:mm:ss')
         setStats(statsFormatted);
     }
-
+    
     const handleAdd = () =>  {
-        setPace(pace + 1)
+        const paceIncrement = pace + 5000;
+        const formattedPace = dayjs(paceIncrement).format('mm:ss [min/km]');
+        console.log(formattedPace);
+        setPace(paceIncrement)
+        
     }
 
     const handleSub = () =>  {
-        setPace(pace - 1)
+        const paceIncrement = pace - 5000;
+        const formattedPace = dayjs(paceIncrement).format('mm:ss [min/km]');
+        console.log(formattedPace);
+        setPace(paceIncrement)
     }
 
     return(
@@ -59,14 +65,14 @@ export const Timer = () => {
             <div id="pacestats">
             <button disabled={ running } onClick={handleSub}>-</button>
                 <label>
-                    <input type="text" value={ pace } disabled={ running } onChange={(e) => setPace(e.target.value)} />
+                <input type="text" readOnly="readonly" value={ pace } disabled={ running } onChange={(e) => setPace(e.target.value)} />
                 </label>
             <button disabled={ running } onClick={handleAdd}>+</button>
             </div>
 
             <div id="runstats">
-                <button disabled={ running } onClick={handleStart}>{ changebtn }</button>
-                <button disabled={ !running } onClick={handleStop}>Stop</button>
+                {!running && <button onClick={handleStart}>Start</button>}
+                {running && <button  onClick={handleStop}>Stop</button>}
                     <p>
                         <strong>{ runtime }</strong>
                     </p>
@@ -74,11 +80,14 @@ export const Timer = () => {
 
             <div id="stathistory">
                 <ul>
+
                     <p>
                         { stats }
                     </p>
                 </ul>
             </div>
+
+
 
         </div>
     )
