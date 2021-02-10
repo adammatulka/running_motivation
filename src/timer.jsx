@@ -1,16 +1,25 @@
 import React, { useRef, useState } from 'react';   
 import dayjs from 'dayjs';
+
 import './styles.css';
 
+const STORAGE_KEY = 'lastRun';
 
 export const Timer = () => {
     const [pace, setPace] = useState(dayjs().startOf('day').valueOf()); // uuuuhhh
     const [runtime, setRuntime] = useState('');
     const [runStart, setRunStart] = useState();
     const [running, setRunning] = useState(false);
-    
-    const [stats, setStats] = useState([]); // I'm a dummy dumb dumb :((
 
+    const [runHistory, setRunHistory] = useState(() => {
+        let runHistoryCurrent = [];
+        const runHistoryCurrentRaw = localStorage.getItem(STORAGE_KEY);
+        if (runHistoryCurrentRaw) {
+            runHistoryCurrent = JSON.parse(runHistoryCurrentRaw);
+        }
+        return runHistoryCurrent;
+    });
+    
     const runningInterval = useRef();
     
     const handleStart = (e) =>{ 
@@ -28,6 +37,15 @@ export const Timer = () => {
         setRunning(true);
     }    
 
+    const loadRunHistoryFromStorage = () => {
+        let runHistoryCurrent = [];
+        const runHistoryCurrentRaw = localStorage.getItem(STORAGE_KEY);
+        if (runHistoryCurrentRaw) {
+            runHistoryCurrent = JSON.parse(runHistoryCurrentRaw);
+        }
+        setRunHistory(runHistoryCurrent);
+    };
+
     const handleStop = (e) =>{
         e.preventDefault(); 
 
@@ -38,13 +56,19 @@ export const Timer = () => {
         const now = new Date();
         const stats = now - runStart;
 
-        localStorage.setItem('lastRun', stats);
-        const listLastRun = localStorage.getItem('lastRun');
-        const statsFormatted = dayjs().startOf('day').add(listLastRun, 'milliseconds').format('[Run1:] HH:mm:ss') // test
+        // --- get current storage state ---
+        let runHistoryCurrent = [];
+        const runHistoryCurrentRaw = localStorage.getItem(STORAGE_KEY);
+        if (runHistoryCurrentRaw) {
+            runHistoryCurrent = JSON.parse(runHistoryCurrentRaw);
+        }
 
-        console.log(dayjs().startOf('day').add(listLastRun, 'milliseconds').format('[Time:] HH:mm:ss'));
+        // --- add new run time ---
+        runHistoryCurrent.push(stats);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(runHistoryCurrent));
 
-         setStats(statsFormatted);
+        // -- refresh ---
+        loadRunHistoryFromStorage();
     }
     
     const handleAdd = () =>  {
@@ -63,12 +87,19 @@ export const Timer = () => {
         console.log(formattedPace); // displayed just fine when logged in console
     }
 
+    const formattedPace = dayjs(pace).format('mm:ss [min/km]');
+
+    const runHistoryItems = runHistory.map((time, index) => {
+        const formattedRun = dayjs().startOf('day').add(time, 'milliseconds').format(`[Run n.${index + 1}:] HH:mm:ss`);
+        return <li>{formattedRun}</li>;
+    });
+
     return(
         <div id="whole">
             <div id="pacestats">
             <button id="btnplus" disabled={ running } onClick={handleSub}>-</button>
                 <label>
-                    <input type="text" readOnly="readonly" value={ pace } disabled={ running } onChange={(e) => setPace(e.target.value)} />
+                    <input type="text" readOnly="readonly" value={formattedPace} disabled={ running } onChange={(e) => setPace(e.target.value)} />
                 </label>
             <button id="btnminus" disabled={ running } onClick={handleAdd}>+</button>
             </div>
@@ -87,8 +118,7 @@ export const Timer = () => {
                 </p>
             </div>
 
-
-
+            <ul>{runHistoryItems}</ul>
         </div>
     )
 }
