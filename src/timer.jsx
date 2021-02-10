@@ -1,16 +1,15 @@
 import React, { useRef, useState } from 'react';   
 import dayjs from 'dayjs';
+import './styles.css';
 
 
 export const Timer = () => {
-    const [pace, setPace] = useState(dayjs().startOf('day').valueOf());
+    const [pace, setPace] = useState(dayjs().startOf('day').valueOf()); // uuuuhhh
     const [runtime, setRuntime] = useState('');
     const [runStart, setRunStart] = useState();
     const [running, setRunning] = useState(false);
     
-    const [stats, setStats] = useState('')
-
-    const [changebtn, setChangebtn] = useState('Start');
+    const [stats, setStats] = useState([]); // I'm a dummy dumb dumb :((
 
     const runningInterval = useRef();
     
@@ -37,54 +36,55 @@ export const Timer = () => {
         setRunning(false);
 
         const now = new Date();
-        localStorage.setItem('lastRun', now - runStart);
+        const stats = now - runStart;
+
+        localStorage.setItem('lastRun', stats);
         const listLastRun = localStorage.getItem('lastRun');
+        const statsFormatted = dayjs().startOf('day').add(listLastRun, 'milliseconds').format('[Run1:] HH:mm:ss') // test
+
         console.log(dayjs().startOf('day').add(listLastRun, 'milliseconds').format('[Time:] HH:mm:ss'));
 
-        const statsFormatted = dayjs().startOf('day').add(listLastRun, 'milliseconds').format('[Time:] HH:mm:ss')
-        setStats(statsFormatted);
+         setStats(statsFormatted);
     }
     
     const handleAdd = () =>  {
-        const paceIncrement = pace + 5000;
-        const formattedPace = dayjs(paceIncrement).format('mm:ss [min/km]');
-        console.log(formattedPace);
+        const paceIncrement = pace + 5000; // + 5 sec.
+        const formattedPace = dayjs(paceIncrement).format('mm:ss [min/km]'); // Invalid date when displayed by setPace()
         setPace(paceIncrement)
         
+        console.log(formattedPace); // displayed just fine when logged in console
     }
 
     const handleSub = () =>  {
-        const paceIncrement = pace - 5000;
-        const formattedPace = dayjs(paceIncrement).format('mm:ss [min/km]');
-        console.log(formattedPace);
-        setPace(paceIncrement)
+        const paceDecrement = pace - 5000; // - 5 sec.
+        const formattedPace = dayjs(paceDecrement).format('mm:ss [min/km]'); // Invalid date when displayed by setPace()
+        setPace(paceDecrement)
+
+        console.log(formattedPace); // displayed just fine when logged in console
     }
 
     return(
-        <div>
+        <div id="whole">
             <div id="pacestats">
-            <button disabled={ running } onClick={handleSub}>-</button>
+            <button id="btnplus" disabled={ running } onClick={handleSub}>-</button>
                 <label>
-                <input type="text" readOnly="readonly" value={ pace } disabled={ running } onChange={(e) => setPace(e.target.value)} />
+                    <input type="text" readOnly="readonly" value={ pace } disabled={ running } onChange={(e) => setPace(e.target.value)} />
                 </label>
-            <button disabled={ running } onClick={handleAdd}>+</button>
+            <button id="btnminus" disabled={ running } onClick={handleAdd}>+</button>
             </div>
 
             <div id="runstats">
-                {!running && <button onClick={handleStart}>Start</button>}
-                {running && <button  onClick={handleStop}>Stop</button>}
+                {!running && <button id="btnstart" onClick={handleStart}>Start</button>}
+                {running && <button id="btnstop" onClick={handleStop}>Stop</button>}
                     <p>
                         <strong>{ runtime }</strong>
                     </p>
             </div>
 
             <div id="stathistory">
-                <ul>
-
-                    <p>
-                        { stats }
-                    </p>
-                </ul>
+                <p>
+                    <strong>{ stats }</strong>
+                </p>
             </div>
 
 

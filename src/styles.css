@@ -1,0 +1,61 @@
+#whole{
+
+    height: 581px;
+    width: 308px;
+    min-height: 100%;
+    background-color: rgba(229, 229, 229, 1);
+}
+
+#pacestats{
+    padding-block: 10%;
+    margin-left: 10%;
+}
+
+p{
+    margin-left: 30%;
+    font-size: 18px;
+}
+
+button{
+    background-color: rgba(248, 139, 139, 1);
+    border: none;
+    height: 43px;
+    width: 48px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+button :disabled{
+    background-color: grey; /* ??? :( */
+}
+  
+
+#btnstart{
+    width: 242px;
+    height: 43px;
+    font-size: 20px;
+    font-weight: 300;
+    margin-left: 10%;
+    
+
+}
+
+#btnstop{
+    width: 242px;
+    height: 43px;
+    font-size: 20px;
+    font-weight: 300;
+    margin-left: 10%;
+    
+
+}
+
+input{
+    border: none;
+    width: 142px;
+    height: 30px;
+    background-color: rgba(229, 229, 229, 1);
+    font-size: 18px;
+    text-align: center;
+
+}
